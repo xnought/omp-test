@@ -18,6 +18,7 @@ int main()
 	int data_per_thread = (int)std::ceil((float)TOTAL / (float)total_threads);
 	printf("Data processing per thread %d\n", data_per_thread);
 
+	int summed = 0;
 #pragma omp parallel
 	{
 		int i = omp_get_thread_num();
@@ -25,7 +26,11 @@ int main()
 		{
 			int idx = data_per_thread * i + j;
 			if (idx < TOTAL)
-				printf("(%d) %d", i, a[idx]);
+			{
+#pragma omp atomic
+				summed += a[idx];
+			}
 		}
 	}
+	printf("Summed: %d\n", summed);
 }
